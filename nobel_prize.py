@@ -54,13 +54,14 @@ def run():
             print(HELP_STRING)
 
         try:
+
             year, field = user_input.split()
             parameter = fields[field]
 
             parameter = {"nobelPrizeYear": int(year), "nobelPrizeCategory": parameter}
 
             res = get_api(parameter)
-            # TODO 5p  Lägg till någon typ av avskiljare mellan pristagare, exempelvis --------------------------
+            #  5p  Lägg till någon typ av avskiljare mellan pristagare, exempelvis --------------------------
 
             # TODO 20p Skriv ut hur mycket pengar varje pristagare fick, tänk på att en del priser delas mellan flera mottagare, skriv ut både i dåtidens pengar och dagens värde
             #   Skriv ut med tre decimalers precision. exempel 534515.123
@@ -79,7 +80,7 @@ def run():
                     print(m['motivation']['en'])
                     andel = m['portion']
         except:
-            print(HELP_STRING)
+            print('Skriv in år och sedan fält!')
 
 
 
