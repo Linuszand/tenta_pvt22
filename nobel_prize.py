@@ -14,6 +14,7 @@ litteratur
 ekonomi
 fred
 medicin
+Write Q to exit program
 """
 
 cat = {"fysik": "phy",
@@ -32,7 +33,7 @@ cat = {"fysik": "phy",
 
 
 
-def main():
+def run():
     print(HELP_STRING)
 
     while True:
@@ -40,13 +41,21 @@ def main():
         # 5p Skriv bara ut hjälptexten en gång när programmet startar inte efter varje gång användaren matat in en fråga
         #      Förbättra hjälputskriften så att användaren vet vilka fält, exempelvis kemi som finns att välja på
 
-        # TODO 5p Gör så att det finns ett sätt att avsluta programmet, om användaren skriver Q så skall programmet stängas av
+        #  5p Gör så att det finns ett sätt att avsluta programmet, om användaren skriver Q så skall programmet stängas av
         #      Beskriv i hjälptexten hur man avslutar programmet
-        # TODO 5p Gör så att hjälptexten skrivs ut om användaren skriver h eller H
-        aaa = input(">")
-        a, b = aaa.split()
-        c = cat[b]
 
+
+        # TODO 5p Gör så att hjälptexten skrivs ut om användaren skriver h eller H
+
+        user_input = input(">")
+
+        if user_input == 'Q':
+            break
+        elif user_input == 'H' or 'h':
+            print(HELP_STRING)
+        a, b = user_input.split()
+
+        c = cat[b]
 
         c = {"nobelPrizeYear": int(a),"nobelPrizeCategory":c}
 
@@ -71,4 +80,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run()
