@@ -53,37 +53,39 @@ def run():
         elif user_input == 'H' or 'h':
             print(HELP_STRING)
 
+        try:
+            year, field = user_input.split()
 
-        year, field = user_input.split()
+            parameter = fields[field]
+            print(parameter)
 
-        parameter = fields[field]
-        print(parameter)
+            parameter = {"nobelPrizeYear": int(year), "nobelPrizeCategory": parameter}
 
-        parameter = {"nobelPrizeYear": int(year), "nobelPrizeCategory": parameter}
+            res = fetch_api(parameter)
+            #  5p Lägg till någon typ av avskiljare mellan pristagare, exempelvis --------------------------
 
-        res = fetch_api(parameter)
-        #  5p  Lägg till någon typ av avskiljare mellan pristagare, exempelvis --------------------------
+            # TODO 20p Skriv ut hur mycket pengar varje pristagare fick, tänk på att en del priser delas mellan flera mottagare, skriv ut både i dåtidens pengar och dagens värde
+            #   Skriv ut med tre decimalers precision. exempel 534515.123
+            #   Skapa en funktion som hanterar uträkningen av prispengar och skapa minst ett enhetestest för den funktionen
+            #   Tips, titta på variabeln andel
+            # Feynman fick exempelvis 1/3 av priset i fysik 1965, vilket borde gett ungefär 282000/3 kronor i dåtidens penningvärde
 
-        # TODO 20p Skriv ut hur mycket pengar varje pristagare fick, tänk på att en del priser delas mellan flera mottagare, skriv ut både i dåtidens pengar och dagens värde
-        #   Skriv ut med tre decimalers precision. exempel 534515.123
-        #   Skapa en funktion som hanterar uträkningen av prispengar och skapa minst ett enhetestest för den funktionen
-        #   Tips, titta på variabeln andel
-        # Feynman fick exempelvis 1/3 av priset i fysik 1965, vilket borde gett ungefär 282000/3 kronor i dåtidens penningvärde
+            for prize in res["nobelPrizes"]:
+                peng = prize["prizeAmount"]
+                idagpeng = prize["prizeAmountAdjusted"]
+                print(f"{prize['categoryFullName']['se']} prissumma: {peng} SEK")
+                print(f"Dagens värde: {idagpeng}\n")
 
-        for prize in res["nobelPrizes"]:
-            peng = prize["prizeAmount"]
-            idagpeng = prize["prizeAmountAdjusted"]
-            print(f"{prize['categoryFullName']['se']} prissumma: {peng} SEK")
-            print(f"Dagens värde: {idagpeng}\n")
-
-            for name_info in prize["laureates"]:
-                print(f"{name_info['knownName']['en']} prissumma: {float(peng/3)} dagens värde: {float(idagpeng/3)}")
-                print("Prissumma: " + "{:.3f}".format(float(peng/3)))
-                print("Dagens värde: " + "{:.3f}".format(float(idagpeng/3)))
-                print(f"{name_info['motivation']['en']}")
-                andel = name_info['portion']
-                print(andel)
-                print('-' * 80)
+                for name_info in prize["laureates"]:
+                    print(f"{name_info['knownName']['en']} prissumma: {float(peng/3)} dagens värde: {float(idagpeng/3)}")
+                    print("Prissumma: " + "{:.3f}".format(float(peng/3)))
+                    print("Dagens värde: " + "{:.3f}".format(float(idagpeng/3)))
+                    print(f"{name_info['motivation']['en']}")
+                    andel = name_info['portion']
+                    print(andel)
+                    print('-' * 80)
+        except ValueError:
+            print('Wrong input. Enter a year and field separated by space.')
 
 
 if __name__ == '__main__':
