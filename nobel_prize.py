@@ -32,6 +32,25 @@ fields = {"fysik": "phy",
 
 
 
+def print_nobelwinners(res):
+    '''
+    Prints out information about the nobel-prize winners
+    :param res: Iterable
+    '''
+    for prize in res["nobelPrizes"]:
+        peng = prize["prizeAmount"]
+        idagpeng = prize["prizeAmountAdjusted"]
+        print(f"{prize['categoryFullName']['se']} prissumma: {peng} SEK")
+        print(f"Dagens värde: {idagpeng}\n")
+
+        for name_info in prize["laureates"]:
+            print(f"{name_info['knownName']['en']} prissumma: {float(peng / 3)} dagens värde: {float(idagpeng / 3)}")
+            print("Prissumma: " + "{:.3f}".format(float(peng / 3)))
+            print("Dagens värde: " + "{:.3f}".format(float(idagpeng / 3)))
+            print(f"{name_info['motivation']['en']}")
+            andel = name_info['portion']
+            print(andel)
+            print('-' * 80)
 
 
 def run():
@@ -70,22 +89,12 @@ def run():
             #   Tips, titta på variabeln andel
             # Feynman fick exempelvis 1/3 av priset i fysik 1965, vilket borde gett ungefär 282000/3 kronor i dåtidens penningvärde
 
-            for prize in res["nobelPrizes"]:
-                peng = prize["prizeAmount"]
-                idagpeng = prize["prizeAmountAdjusted"]
-                print(f"{prize['categoryFullName']['se']} prissumma: {peng} SEK")
-                print(f"Dagens värde: {idagpeng}\n")
-
-                for name_info in prize["laureates"]:
-                    print(f"{name_info['knownName']['en']} prissumma: {float(peng/3)} dagens värde: {float(idagpeng/3)}")
-                    print("Prissumma: " + "{:.3f}".format(float(peng/3)))
-                    print("Dagens värde: " + "{:.3f}".format(float(idagpeng/3)))
-                    print(f"{name_info['motivation']['en']}")
-                    andel = name_info['portion']
-                    print(andel)
-                    print('-' * 80)
+            print_nobelwinners(res)
         except ValueError:
             print('Wrong input. Enter a year and field separated by space.')
+
+
+
 
 
 if __name__ == '__main__':
