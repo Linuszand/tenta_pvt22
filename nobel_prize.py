@@ -1,4 +1,4 @@
-import requests
+from get_api import get_api
 
 # Tips: använd sidan nedan för att se vilken data vi får tillbaks och hur apiet fungerar
 # vi använder oss enbart av /nobelPrizes
@@ -17,7 +17,7 @@ medicin
 Write Q to exit program
 """
 
-cat = {"fysik": "phy",
+fields = {"fysik": "phy",
        "kemi": "che",
        "litteratur": "lit",
        "ekonomi": "eco",
@@ -45,38 +45,44 @@ def run():
         #      Beskriv i hjälptexten hur man avslutar programmet
 
 
-        # TODO 5p Gör så att hjälptexten skrivs ut om användaren skriver h eller H
+        #  5p Gör så att hjälptexten skrivs ut om användaren skriver h eller H
 
         user_input = input(">")
-
-        if user_input == 'Q':
+        if user_input == 'Q'.lower():
             break
         elif user_input == 'H' or 'h':
             print(HELP_STRING)
-        a, b = user_input.split()
 
-        c = cat[b]
+        try:
+            year, field = user_input.split()
+            parameter = fields[field]
 
-        c = {"nobelPrizeYear": int(a),"nobelPrizeCategory":c}
+            parameter = {"nobelPrizeYear": int(year), "nobelPrizeCategory": parameter}
 
-        res = requests.get("http://api.nobelprize.org/2.1/nobelPrizes", params=c).json()
-        # TODO 5p  Lägg till någon typ av avskiljare mellan pristagare, exempelvis --------------------------
+            res = get_api(parameter)
+            # TODO 5p  Lägg till någon typ av avskiljare mellan pristagare, exempelvis --------------------------
 
-        # TODO 20p Skriv ut hur mycket pengar varje pristagare fick, tänk på att en del priser delas mellan flera mottagare, skriv ut både i dåtidens pengar och dagens värde
-        #   Skriv ut med tre decimalers precision. exempel 534515.123
-        #   Skapa en funktion som hanterar uträkningen av prispengar och skapa minst ett enhetestest för den funktionen
-        #   Tips, titta på variabeln andel
-        # Feynman fick exempelvis 1/3 av priset i fysik 1965, vilket borde gett ungefär 282000/3 kronor i dåtidens penningvärde
+            # TODO 20p Skriv ut hur mycket pengar varje pristagare fick, tänk på att en del priser delas mellan flera mottagare, skriv ut både i dåtidens pengar och dagens värde
+            #   Skriv ut med tre decimalers precision. exempel 534515.123
+            #   Skapa en funktion som hanterar uträkningen av prispengar och skapa minst ett enhetestest för den funktionen
+            #   Tips, titta på variabeln andel
+            # Feynman fick exempelvis 1/3 av priset i fysik 1965, vilket borde gett ungefär 282000/3 kronor i dåtidens penningvärde
 
-        for p in res["nobelPrizes"]:
-            peng = p["prizeAmount"]
-            idagpeng = p["prizeAmountAdjusted"]
-            print(f"{p['categoryFullName']['se']} prissumma {peng} SEK")
+            for prize in res["nobelPrizes"]:
+                peng = prize["prizeAmount"]
+                idagpeng = prize["prizeAmountAdjusted"]
+                print(f"{prize['categoryFullName']['se']} prissumma {peng} SEK")
 
-            for m in p["laureates"]:
-                print(m['knownName']['en'])
-                print(m['motivation']['en'])
-                andel = m['portion']
+                for m in prize["laureates"]:
+                    print(m['knownName']['en'])
+                    print('-' * 80)
+                    print(m['motivation']['en'])
+                    andel = m['portion']
+        except:
+            print(HELP_STRING)
+
+
+
 
 
 if __name__ == '__main__':
