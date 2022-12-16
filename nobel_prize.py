@@ -1,4 +1,4 @@
-from get_api import get_api
+from get_api import fetch_api
 
 # Tips: använd sidan nedan för att se vilken data vi får tillbaks och hur apiet fungerar
 # vi använder oss enbart av /nobelPrizes
@@ -14,15 +14,16 @@ litteratur
 ekonomi
 fred
 medicin
+
 Write Q to exit program
 """
 
 fields = {"fysik": "phy",
-       "kemi": "che",
-       "litteratur": "lit",
-       "ekonomi": "eco",
-       "fred": "pea",
-       "medicin": "med"}
+          "kemi": "che",
+          "litteratur": "lit",
+          "ekonomi": "eco",
+          "fred": "pea",
+          "medicin": "med"}
 
 
 
@@ -44,46 +45,45 @@ def run():
         #  5p Gör så att det finns ett sätt att avsluta programmet, om användaren skriver Q så skall programmet stängas av
         #      Beskriv i hjälptexten hur man avslutar programmet
 
-
         #  5p Gör så att hjälptexten skrivs ut om användaren skriver h eller H
 
         user_input = input(">")
-        if user_input == 'Q'.lower():
+        if user_input == 'Q':
             break
         elif user_input == 'H' or 'h':
             print(HELP_STRING)
 
-        try:
 
-            year, field = user_input.split()
-            parameter = fields[field]
+        year, field = user_input.split()
 
-            parameter = {"nobelPrizeYear": int(year), "nobelPrizeCategory": parameter}
+        parameter = fields[field]
+        print(parameter)
 
-            res = get_api(parameter)
-            #  5p  Lägg till någon typ av avskiljare mellan pristagare, exempelvis --------------------------
+        parameter = {"nobelPrizeYear": int(year), "nobelPrizeCategory": parameter}
 
-            # TODO 20p Skriv ut hur mycket pengar varje pristagare fick, tänk på att en del priser delas mellan flera mottagare, skriv ut både i dåtidens pengar och dagens värde
-            #   Skriv ut med tre decimalers precision. exempel 534515.123
-            #   Skapa en funktion som hanterar uträkningen av prispengar och skapa minst ett enhetestest för den funktionen
-            #   Tips, titta på variabeln andel
-            # Feynman fick exempelvis 1/3 av priset i fysik 1965, vilket borde gett ungefär 282000/3 kronor i dåtidens penningvärde
+        res = fetch_api(parameter)
+        #  5p  Lägg till någon typ av avskiljare mellan pristagare, exempelvis --------------------------
 
-            for prize in res["nobelPrizes"]:
-                peng = prize["prizeAmount"]
-                idagpeng = prize["prizeAmountAdjusted"]
-                print(f"{prize['categoryFullName']['se']} prissumma {peng} SEK")
+        # TODO 20p Skriv ut hur mycket pengar varje pristagare fick, tänk på att en del priser delas mellan flera mottagare, skriv ut både i dåtidens pengar och dagens värde
+        #   Skriv ut med tre decimalers precision. exempel 534515.123
+        #   Skapa en funktion som hanterar uträkningen av prispengar och skapa minst ett enhetestest för den funktionen
+        #   Tips, titta på variabeln andel
+        # Feynman fick exempelvis 1/3 av priset i fysik 1965, vilket borde gett ungefär 282000/3 kronor i dåtidens penningvärde
 
-                for m in prize["laureates"]:
-                    print(m['knownName']['en'])
-                    print('-' * 80)
-                    print(m['motivation']['en'])
-                    andel = m['portion']
-        except:
-            print('Skriv in år och sedan fält!')
+        for prize in res["nobelPrizes"]:
+            peng = prize["prizeAmount"]
+            idagpeng = prize["prizeAmountAdjusted"]
+            print(f"{prize['categoryFullName']['se']} prissumma: {peng} SEK")
+            print(f"Dagens värde: {idagpeng}\n")
 
-
-
+            for name_info in prize["laureates"]:
+                print(f"{name_info['knownName']['en']} prissumma: {float(peng/3)} dagens värde: {float(idagpeng/3)}")
+                print("Prissumma: " + "{:.3f}".format(float(peng/3)))
+                print("Dagens värde: " + "{:.3f}".format(float(idagpeng/3)))
+                print(f"{name_info['motivation']['en']}")
+                andel = name_info['portion']
+                print(andel)
+                print('-' * 80)
 
 
 if __name__ == '__main__':
